@@ -1,6 +1,61 @@
-# FolderStructureReflectingI18nLoader
+# How this was born?
 
-TODO: Write a gem description
+Consider multilingual app with content-heavy static pages:
+
+app/views/pages/faq.html.slim:
+```slim
+h2 '.question-1'
+p  '.answer-1'
+/...
+
+h2 = t '.question-20'
+p  = t '.answer-20'
+```
+
+## Translation with default i18n loader:
+
+config/locales/en.yml
+```yaml
+en:
+  pages:
+    faq:
+      question-1: What?
+      answer-1:   That
+      #...
+```
+
+config/locales/de.yml
+```yaml
+en:
+  pages:
+    faq:
+      question-1: Was?
+      answer-1:   Das
+      #...
+```
+...
+
+## Translation with folder_structure_reflecting_i18n_loader
+app/views/pages/t.faq/en.yml
+```yaml
+question-1: What?
+answer-1:   That
+#...
+```
+
+app/views/pages/t.faq/de.yml
+```yaml
+question-1: Was?
+answer-1:   Das
+#...
+```
+
+
+## Profit?
+
+1. Easier to move files (with their translations)
+2. Intuitive 
+
 
 ## Installation
 
@@ -12,13 +67,18 @@ And then execute:
 
     $ bundle
 
-Or install it yourself as:
+With Rails, update config/application.rb:
 
-    $ gem install folder_structure_reflecting_i18n_loader
+    I18n::Railtie.reloader_paths.concat  Dir.glob('app/views/**/*.yml')
 
-## Usage
+    I18n.backend = I18n::Backend::Chain.new(I18n.backend,  FolderStructureReflectingI18nLoader::Loader.new) # Rails.root + app/views is default root for it
+    
+    
+# TODO:
 
-TODO: Write usage instructions here
+1. Add rails example / specs
+
+
 
 ## Contributing
 
